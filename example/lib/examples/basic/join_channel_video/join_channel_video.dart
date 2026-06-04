@@ -18,6 +18,7 @@ class JoinChannelVideo extends StatefulWidget {
 
 class _State extends State<JoinChannelVideo> {
   late final RtcEngine _engine;
+  bool _isReadyPreview = false;
 
   bool isJoined = false,
       switchCamera = true,
@@ -29,7 +30,6 @@ class _State extends State<JoinChannelVideo> {
   late TextEditingController _controller;
   late TextEditingController uidController;
   VideoViewController? _remoteVideoController;
-  bool test = false;
   bool _isUseFlutterTexture = false;
   bool _isUseAndroidSurfaceView = false;
 
@@ -39,8 +39,6 @@ class _State extends State<JoinChannelVideo> {
   ChannelProfileType _channelProfileType =
       ChannelProfileType.channelProfileLiveBroadcasting;
   late final RtcEngineEventHandler _rtcEngineEventHandler;
-  // global key
-  final GlobalKey _agoraVideoViewKey = GlobalKey();
   @override
   void initState() {
     super.initState();
@@ -129,6 +127,10 @@ class _State extends State<JoinChannelVideo> {
 
     await _engine.enableVideo();
     await _engine.startPreview();
+
+    setState(() {
+      _isReadyPreview = true;
+    });
   }
 
   Future<void> _updateRemoteVideoController(
@@ -156,10 +158,6 @@ class _State extends State<JoinChannelVideo> {
       );
     }
 
-    if (_switchViewLevel) {
-      // Switch view level
-      test = !test;
-    }
     setState(() {});
   }
 
@@ -217,6 +215,7 @@ class _State extends State<JoinChannelVideo> {
   Widget build(BuildContext context) {
     return ExampleActionsWidget(
       displayContentBuilder: (context, isLayoutHorizontal) {
+        if (!_isReadyPreview) return Container();
         return Stack(
           children: [
             StatsMonitoringWidget(
@@ -235,7 +234,7 @@ class _State extends State<JoinChannelVideo> {
               ),
             ),
             if (_remoteVideoController != null)
-              if (test)
+              if (_switchViewLevel)
                 Align(
                   alignment: Alignment.topLeft,
                   child: SingleChildScrollView(
@@ -433,7 +432,7 @@ class _State extends State<JoinChannelVideo> {
                     ],
                   ),
                   Text(
-                    'Current: test=$test, controller=${_remoteVideoController?.hashCode ?? "null"}',
+                    'Current: _switchViewLevel=$_switchViewLevel, controller=${_remoteVideoController?.hashCode ?? "null"}',
                     style: const TextStyle(fontSize: 10, color: Colors.blue),
                   ),
                 ],
