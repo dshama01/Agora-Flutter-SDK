@@ -9,10 +9,7 @@ import {
   RenderResult,
   TerraContext,
 } from "@agoraio-extensions/terra-core";
-import {
-  getMergeNodeParserUserData,
-  irisApiId,
-} from "@agoraio-extensions/terra_shared_configs";
+import { irisApiId } from "@agoraio-extensions/terra_shared_configs";
 import { isCallbackClass } from "./utils";
 
 const funcNeedCheckWithBaseClasses = [
@@ -23,18 +20,13 @@ function isNeedCheckWithBaseClasses(clazz: Clazz): boolean {
   return funcNeedCheckWithBaseClasses.includes(clazz.fullName);
 }
 
-export interface EventIdsMappingRendererArgs {
-  useLegacyEventId?: boolean; // default is false
-}
-
 export default function EventIdsMappingRenderer(
   terraContext: TerraContext,
-  args: EventIdsMappingRendererArgs,
+  args: any,
   parseResult: ParseResult
 ): RenderResult[] {
   let cxxFiles = parseResult!.nodes as CXXFile[];
   let eventIdsMapping: Map<string, string[]> = new Map();
-  let useLegacyEventId = args.useLegacyEventId ?? false;
 
   cxxFiles.forEach((cxxFile: CXXFile) => {
     cxxFile.nodes.forEach((node) => {
@@ -49,24 +41,6 @@ export default function EventIdsMappingRenderer(
                 eventIdsMapping.set(key, []);
               }
               eventIdsMapping.get(key)?.push(value);
-              if (useLegacyEventId) {
-                let mergeNodeParserUserData =
-                  getMergeNodeParserUserData(method);
-                if (
-                  mergeNodeParserUserData?.sourceClazzName ==
-                  "IRtcEngineEventHandlerEx"
-                ) {
-                  eventIdsMapping
-                    .get(key)
-                    ?.push(
-                      `RtcEngineEventHandlerEx_${value
-                        .split("_")
-                        .slice(1)
-                        .join("_")}`
-                    );
-                  eventIdsMapping.get(key)?.push(`${value}Ex`); // for web
-                }
-              }
             }
           }
         });

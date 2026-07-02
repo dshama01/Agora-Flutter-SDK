@@ -31,34 +31,29 @@ export default function EventHandlerImplParamsJsonRenderer(
     .flatMap((cxxFile: CXXFile) => cxxFile.nodes)
     .filter((it) => it.__TYPE == CXXTYPE.Clazz)
     .filter((it) => isCallbackClass(it.asClazz()))
-    .map((it) => {
-      return {
-        clazz: it.asClazz()!,
-        methods: it.asClazz()!.methods,
-      };
-    })
-    .flatMap((holder) => {
-      return holder.methods.map((node) => {
-        let memberFunc = node as MemberFunction;
-        let dartFuncName = dartName(memberFunc);
-        dartFuncName = dartFuncName[0].toUpperCase() + dartFuncName.slice(1);
-        let parentName = dartName(holder.clazz);
-        let jsonClassName = parentName + dartFuncName + "Json";
+    .flatMap((it) => it.asClazz()!.methods)
+    .map((node) => {
+      let memberFunc = node as MemberFunction;
+      let dartFuncName = dartName(memberFunc);
+      dartFuncName = dartFuncName[0].toUpperCase() + dartFuncName.slice(1);
+      let jsonClassName =
+        (memberFunc.parent ? dartName(memberFunc.parent!) : "") +
+        dartFuncName +
+        "Json";
 
-        return `
-        ${renderJsonSerializable(
-          parseResult,
-          jsonClassName,
-          memberFunc.parameters.map((it) => variableToMemberVariable(it))
-        )}
-  
-        ${renderBufferExtBlock(
-          parseResult,
-          jsonClassName,
-          memberFunc.parameters.map((it) => variableToMemberVariable(it))
-        )}
-        `.trim();
-      });
+      return `
+      ${renderJsonSerializable(
+        parseResult,
+        jsonClassName,
+        memberFunc.parameters.map((it) => variableToMemberVariable(it))
+      )}
+
+      ${renderBufferExtBlock(
+        parseResult,
+        jsonClassName,
+        memberFunc.parameters.map((it) => variableToMemberVariable(it))
+      )}
+      `.trim();
     })
     .join("\n\n");
 
@@ -67,7 +62,8 @@ ${defaultDartHeader}
 
 ${defaultIgnoreForFile}, prefer_is_empty
 
-import 'package:agora_rtc_engine/src/binding_forward_export.dart';
+import '/src/_serializable.dart';
+import '/src/binding_forward_export.dart';
 part 'event_handler_param_json.g.dart';
 
 ${subContents}

@@ -40,23 +40,9 @@ const deleteNodes = [
     parent_name: "IRtcEngineEventHandlerEx",
   },
   {
-    // onFirstLocalVideoFramePublished
-    __TYPE: CXXTYPE.MemberFunction,
-    name: "onFirstLocalVideoFramePublished",
-    namespaces: ["agora", "rtc"],
-    parent_name: "IRtcEngineEventHandlerEx",
-  },
-  {
     // onLocalVideoStateChanged
     __TYPE: CXXTYPE.MemberFunction,
     name: "onLocalVideoStateChanged",
-    namespaces: ["agora", "rtc"],
-    parent_name: "IRtcEngineEventHandlerEx",
-  },
-  {
-    // onLocalVideoStats
-    __TYPE: CXXTYPE.MemberFunction,
-    name: "onLocalVideoStats",
     namespaces: ["agora", "rtc"],
     parent_name: "IRtcEngineEventHandlerEx",
   },
@@ -335,20 +321,27 @@ const deleteNodes = [
     parent_name: "IMediaPlayer",
     namespaces: ["agora", "rtc"],
   },
-  // TODO(littlegnal): We should not config these custom nodes by users.
+  // TODO(littlegnal): We should not config these custom nodes.
   // agora::rtc::ext::IRtcEngine::destroyRendererByView
   {
     __TYPE: CXXTYPE.MemberFunction,
     name: "destroyRendererByView",
     parent_name: "IRtcEngine",
-    namespaces: ["agora", "rtc", "ext"],
+    namespaces: ["agora", "rtc"],
   },
   // agora::rtc::ext::IRtcEngine::destroyRendererByConfig
   {
     __TYPE: CXXTYPE.MemberFunction,
     name: "destroyRendererByConfig",
     parent_name: "IRtcEngine",
-    namespaces: ["agora", "rtc", "ext"],
+    namespaces: ["agora", "rtc"],
+  },
+  // agora::rtc::IRtcEngine::queryCameraFocalLengthCapability
+  {
+    __TYPE: CXXTYPE.Variable,
+    name: "size",
+    namespaces: ["agora", "rtc"],
+    parent_name: "queryCameraFocalLengthCapability",
   },
 ];
 
@@ -579,6 +572,29 @@ const updateNodes = [
         kind: SimpleTypeKind.value_t,
         name: "agora::rtc::CHANNEL_MEDIA_RELAY_ERROR",
         source: "agora::rtc::CHANNEL_MEDIA_RELAY_ERROR",
+      },
+    },
+  },
+  // agora::rtc::IRtcEngineEventHandler::onAudioMetadataReceived
+  {
+    node: {
+      __TYPE: CXXTYPE.Variable,
+      name: "metadata",
+      namespaces: ["agora", "rtc"],
+      parent_name: "onAudioMetadataReceived",
+    },
+    updated: {
+      __TYPE: CXXTYPE.Variable,
+      name: "metadata",
+      namespaces: ["agora", "rtc"],
+      parent_name: "onAudioMetadataReceived",
+      type: {
+        __TYPE: CXXTYPE.SimpleType,
+        is_builtin_type: false,
+        is_const: true,
+        kind: SimpleTypeKind.pointer_t,
+        name: "uint8_t",
+        source: "const uint8_t*",
       },
     },
   },
@@ -1105,6 +1121,29 @@ const updateNodes = [
       },
     },
   },
+  // agora::rtc::IRtcEngineEx::sendAudioMetadataEx
+  {
+    node: {
+      __TYPE: CXXTYPE.Variable,
+      name: "metadata",
+      namespaces: ["agora", "rtc"],
+      parent_name: "sendAudioMetadataEx",
+    },
+    updated: {
+      __TYPE: CXXTYPE.Variable,
+      name: "metadata",
+      namespaces: ["agora", "rtc"],
+      parent_name: "sendAudioMetadataEx",
+      type: {
+        __TYPE: CXXTYPE.SimpleType,
+        is_builtin_type: false,
+        is_const: true,
+        kind: SimpleTypeKind.pointer_t,
+        name: "uint8_t",
+        source: "const uint8_t*",
+      },
+    },
+  },
   // agora::rtc::IRtcEngine
   // agora::rtc::IRtcEngine::queryCodecCapability
   {
@@ -1390,6 +1429,50 @@ const updateNodes = [
         kind: SimpleTypeKind.array_t,
         name: "agora::rtc::SpatialAudioZone",
         source: "const agora::rtc::SpatialAudioZone*",
+      },
+    },
+  },
+  // agora::rtc::IRtcEngine::sendAudioMetadata
+  {
+    node: {
+      __TYPE: CXXTYPE.Variable,
+      name: "metadata",
+      namespaces: ["agora", "rtc"],
+      parent_name: "sendAudioMetadata",
+    },
+    updated: {
+      __TYPE: CXXTYPE.Variable,
+      name: "metadata",
+      namespaces: ["agora", "rtc"],
+      parent_name: "sendAudioMetadata",
+      type: {
+        __TYPE: CXXTYPE.SimpleType,
+        is_builtin_type: false,
+        is_const: true,
+        kind: SimpleTypeKind.pointer_t,
+        name: "uint8_t",
+        source: "const uint8_t*",
+      },
+    },
+  },
+  // agora::rtc::IRtcEngine::queryCameraFocalLengthCapability
+  {
+    node: {
+      __TYPE: CXXTYPE.Variable,
+      name: "focalLengthInfos",
+      namespaces: ["agora", "rtc"],
+      parent_name: "queryCameraFocalLengthCapability",
+    },
+    updated: {
+      __TYPE: CXXTYPE.Variable,
+      name: "focalLengthInfos",
+      namespaces: ["agora", "rtc"],
+      parent_name: "queryCameraFocalLengthCapability",
+      type: {
+        __TYPE: CXXTYPE.SimpleType,
+        is_builtin_type: false,
+        is_const: false,
+        kind: SimpleTypeKind.array_t,
       },
     },
   },
