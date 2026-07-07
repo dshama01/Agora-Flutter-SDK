@@ -112,6 +112,17 @@ class _State extends State<SetBeautyEffect> with KeepRemoteVideoViewsMixin {
         extension: "clear_vision");
 
     await _engine.setClientRole(role: ClientRoleType.clientRoleBroadcaster);
+    await _engine.setVideoEncoderConfiguration(
+      VideoEncoderConfiguration(
+        dimensions: const VideoDimensions(width: 1280, height: 720),
+        frameRate: FrameRate.frameRateFps15.value(),
+        bitrate: 0,
+        minBitrate: -1,
+        orientationMode: OrientationMode.orientationModeAdaptive,
+        degradationPreference: DegradationPreference.maintainFramerate,
+        mirrorMode: VideoMirrorModeType.videoMirrorModeAuto,
+      ),
+    );
 
     await _engine.startPreview();
 
