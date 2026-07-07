@@ -25,6 +25,7 @@ class _State extends State<JoinChannelVideo> {
       openCamera = true,
       muteCamera = false,
       muteAllRemoteVideo = false;
+  bool _isBeautyEnabled = true;
   Set<int> remoteUid = {};
   late TextEditingController _controller;
   late TextEditingController uidController;
@@ -139,6 +140,21 @@ class _State extends State<JoinChannelVideo> {
     _engine.registerEventHandler(_rtcEngineEventHandler);
 
     await _engine.enableVideo();
+    await _engine.setVideoEncoderConfiguration(VideoEncoderConfiguration(
+      dimensions: const VideoDimensions(width: 1280, height: 720),
+      frameRate: FrameRate.frameRateFps15.value(),
+      bitrate: 0,
+      minBitrate: -1,
+      orientationMode: OrientationMode.orientationModeAdaptive,
+      degradationPreference: DegradationPreference.maintainFramerate,
+      mirrorMode: VideoMirrorModeType.videoMirrorModeAuto,
+    ));
+    if (!kIsWeb) {
+      await _engine.enableExtension(
+          provider: "agora_video_filters_clear_vision",
+          extension: "clear_vision");
+      await _applyBeautyEffect(enabled: true);
+    }
     await _engine.startPreview();
   }
 
@@ -166,6 +182,29 @@ class _State extends State<JoinChannelVideo> {
       test = !test;
     }
     setState(() {});
+  }
+
+  Future<void> _applyBeautyEffect({required bool enabled}) async {
+    await _engine.setBeautyEffectOptions(
+      enabled: enabled,
+      options: BeautyOptions(
+        lighteningContrastLevel:
+            LighteningContrastLevel.lighteningContrastNormal,
+        lighteningLevel: 0.1,
+        smoothnessLevel: 0.5,
+        rednessLevel: 0.0,
+        sharpnessLevel: 0.1,
+      ),
+    );
+  }
+
+  Future<void> _toggleBeautyEffect() async {
+    if (kIsWeb) return;
+    final nextEnabled = !_isBeautyEnabled;
+    await _applyBeautyEffect(enabled: nextEnabled);
+    setState(() {
+      _isBeautyEnabled = nextEnabled;
+    });
   }
 
   Future<void> _joinChannel() async {
@@ -355,6 +394,17 @@ class _State extends State<JoinChannelVideo> {
                       ]),
                 ],
               ),
+            if (!kIsWeb &&
+                (defaultTargetPlatform == TargetPlatform.android ||
+                    defaultTargetPlatform == TargetPlatform.iOS)) ...[
+              const SizedBox(
+                height: 20,
+              ),
+              ElevatedButton(
+                onPressed: _toggleBeautyEffect,
+                child: Text('Beauty ${_isBeautyEnabled ? 'off' : 'on'}'),
+              ),
+            ],
             const SizedBox(
               height: 20,
             ),
@@ -457,6 +507,8 @@ class _State extends State<JoinChannelVideo> {
             BasicVideoConfigurationWidget(
               rtcEngine: _engine,
               title: 'Video Encoder Configuration',
+              width: 1280,
+              height: 720,
               setConfigButtonText: const Text(
                 'setVideoEncoderConfiguration',
                 style: TextStyle(fontSize: 10),
