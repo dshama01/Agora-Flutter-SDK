@@ -25,7 +25,7 @@ class _State extends State<JoinChannelVideo> {
       openCamera = true,
       muteCamera = false,
       muteAllRemoteVideo = false;
-  bool _isBeautyEnabled = true;
+  bool _isBeautyEnabled = false;
   Set<int> remoteUid = {};
   late TextEditingController _controller;
   late TextEditingController uidController;
