@@ -153,7 +153,7 @@ class _State extends State<JoinChannelVideo> {
       await _engine.enableExtension(
           provider: "agora_video_filters_clear_vision",
           extension: "clear_vision");
-      await _applyBeautyEffect(enabled: true);
+      await _applyBeautyEffect(enabled: _isBeautyEnabled);
     }
     await _engine.startPreview();
   }
