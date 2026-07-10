@@ -10,7 +10,10 @@ buildscript {
         google()
         mavenCentral()
     }
-
+    dependencies {
+        // Defines the plugin availability for all submodules
+        classpath 'com.android.tools.build:gradle:9.1.0'
+    }
 }
 
 rootProject.allprojects {
@@ -28,6 +31,7 @@ android {
         namespace 'io.agora.agora_rtc_ng'
     // }
     compileSdkVersion safeExtGet('compileSdkVersion', 34)
+    ndkVersion "26.1.10909125"
 
     defaultConfig {
         minSdkVersion safeExtGet('minSdkVersion', 21)
@@ -51,6 +55,18 @@ android {
             path 'src/main/cpp/CMakeLists.txt'
         }
     }
+
+    // Add subprojects manipulation if you are using an absolute framework wrapper
+    subprojects { subproject ->
+        afterEvaluate {
+            if (subproject.hasProperty('android')) {
+                // If sub-modules drop their namespace definitions, assign them distinctively
+                if (subproject.android.namespace == null) {
+                    subproject.android.namespace = subproject.group.toString() + "." + subproject.name
+                }
+            }
+        }
+    }
 }
 
 dependencies {
@@ -63,10 +79,17 @@ dependencies {
 
     // native dependencies start
     api 'io.agora.rtc:full-screen-sharing:4.6.2.70'
-    api 'io.agora.rtc:agora-special-full:4.6.2.70'
+//    api 'io.agora.rtc:agora-special-full:4.6.2.70'
     // native dependencies end
   }
 }
+
+//configurations.all {
+//    resolutionStrategy.dependencySubstitution {
+//        // Find the second instance trying to occupy the namespace and neutralize it
+//        substitute module('io.agora.rtc:agora-special-full') using module('io.agora.rtc:iris-rtc:4.2.6-build.1') // Match exact active iris-rtc version
+//    }
+//}
 
 static boolean isDev(Project project) {
   def devFile = project.file('.plugin_dev')

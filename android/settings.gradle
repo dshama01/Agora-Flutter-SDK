@@ -1,1 +1,9 @@
+pluginManagement {
+    repositories {
+        google()        // Critical: Maps to Google's Maven repository
+        mavenCentral()  // Fallback for community plugins
+        gradlePluginPortal()
+    }
+}
+
 rootProject.name = 'agora_rtc_ng'
