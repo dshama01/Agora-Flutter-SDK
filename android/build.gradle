@@ -79,7 +79,7 @@ dependencies {
 
     // native dependencies start
     api 'io.agora.rtc:full-screen-sharing:4.6.2.70'
-//    api 'io.agora.rtc:agora-special-full:4.6.2.70'
+    api 'io.agora.rtc:agora-special-full:4.6.2.70'
     // native dependencies end
   }
 }
